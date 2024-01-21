@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ['master', 'main']
+
+  push:
+    branches: ['master', 'main']
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install falco
+        run: |
+          pip install falco-cli
+
+      - name: Generate a project
+        run: falco start-project test-project
