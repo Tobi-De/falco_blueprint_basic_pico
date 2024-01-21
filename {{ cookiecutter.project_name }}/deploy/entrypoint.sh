@@ -2,5 +2,5 @@
 
 python manage.py collectstatic --noinput
 python manage.py migrate
-falco setup-admin
+python manage.py makesuperuser
 gunicorn config.wsgi --config="deploy/gunicorn.conf.py"

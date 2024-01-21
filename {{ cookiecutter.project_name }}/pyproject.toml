@@ -50,7 +50,7 @@ type = "pip-compile"
 pip-compile-constraint = "default"
 pip-compile-installer = "pip-sync"
 lock-filename = "requirements.txt"
-dependencies = ["dj-notebook>=0.6.1", "Werkzeug[watchdog]>=3.0.1", "pre-commit", "django-stubs[compatible-mypy]", "falco-cli"]
+dependencies = ["dj-notebook>=0.6.1", "Werkzeug[watchdog]>=3.0.1", "pre-commit", "django-stubs[compatible-mypy]"]
 
 [tool.hatch.envs.default.scripts]
 runserver = ["migrate", "python manage.py tailwind runserver {args}"]
