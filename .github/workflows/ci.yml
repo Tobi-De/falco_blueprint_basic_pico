@@ -8,7 +8,7 @@ on:
     branches: ['master', 'main']
 
 jobs:
-  linter:
+  test:
     runs-on: ubuntu-latest
 
     steps:
