@@ -79,7 +79,6 @@ cov-report = ["- coverage combine", "coverage report"]
 cov = ["test-cov", "cov-report"]
 
 [tool.falco]
-version = "{{ cookiecutter.falco_version }}"
 
 [tool.falco.work]
 server = "python manage.py migrate && python manage.py tailwind runserver"
