@@ -81,7 +81,8 @@ cov = ["test-cov", "cov-report"]
 [tool.falco]
 
 [tool.falco.work]
-server = "python manage.py migrate && python manage.py tailwind runserver"
+server = "python manage.py makemigrations && python manage.py migrate && python manage.py runserver"
+tailwind = "python manage.py tailwind watch"
 
 [tool.ruff.lint]
 extend-ignore = ["TID252", "RUF012", "TRY003", "EM101", "I001", "I002"]
