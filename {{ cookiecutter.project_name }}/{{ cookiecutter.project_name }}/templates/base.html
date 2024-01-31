@@ -11,16 +11,26 @@
     <meta name="keywords" content="" />
     {% endraw %}<title>{{ cookiecutter.project_name }}</title>{% raw %}
     {% tailwind_css %}
+    {% block css %}
+    {% endblock css %}
     <script defer src="{% static "vendors/htmx/htmx.min.js" %}"></script>
     {% django_htmx_script %}
-    {% block extra_head %}
-    {% endblock extra_head %}
+    {% block javascript %}
+    {% endblock javascript %}
   </head>
   <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% block content %}
+      <main class="container mx-auto"> 
+        {% block main_content %}
+        {% endblock main_content %}
+      </main>
     {% endblock content %}
-    {% block extra_body %}
-    {% endblock extra_body %}
+
+    {% block modal %}
+    {% endblock modal %}
+      
+    {% block inline_javascript %}
+    {% endblock inline_javascript %}
   </body>
 </html>
 {% endraw %}
