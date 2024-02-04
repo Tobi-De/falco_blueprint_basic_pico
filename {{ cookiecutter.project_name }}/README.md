@@ -44,15 +44,11 @@ hatch run migrate
 Fill the `SUPERUSER_EMAIL` and `SUPERUSER_PASSWORD` in your `.env` file and run:
 
 ```shell
-falco make-superuser
+falco setup-admin
 ```
 
 ### Run the django development server
 
 ```shell
-hatch run runserver
-# if you've aliased `hatch run` to `hr``
-hr runserver
-# if you've added falco-cli as a dependency to your project
 falco work
 ```
