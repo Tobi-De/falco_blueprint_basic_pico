@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import multiprocessing
 
 import environ
 
@@ -37,6 +38,7 @@ THIRD_PARTY_APPS = [
     "django_htmx",
     "template_partials",
     "django_tailwind_cli",
+    "django_q",
     "django_extensions",
     "django_browser_reload",
     "debug_toolbar",
@@ -147,6 +149,18 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 
 SUPERUSER_EMAIL = env.str("DJANGO_SUPERUSER_EMAIL")
 SUPERUSER_PASSWORD = env.str("DJANGO_SUPERUSER_PASSWORD")
+
+# django-q2
+Q_CLUSTER = {
+    "name": "ORM",
+    "workers": multiprocessing.cpu_count() * 2 + 1,
+    "timeout": 60 * 10,  # 10 minutes
+    "retry": 60 * 12,  # 12 minutes
+    "queue_limit": 50,
+    "bulk": 10,
+    "orm": "default",
+}
+
 
 if DJANGO_ENV == "production":
     import sentry_sdk
