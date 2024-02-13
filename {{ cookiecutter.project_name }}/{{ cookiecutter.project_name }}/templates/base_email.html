@@ -51,14 +51,14 @@
                   style="font: normal 12px 'Helvetica Neue', Helvetica, Arial, sans-serif;
                          color: #ababab"
               {# djlint:on #}>
-              <div style="padding: 20px;
+              <div {# djlint:off #} style="padding: 20px;
                           border: 1px solid #b2b2b2;
                           -webkit-box-shadow: 0px 0px 4px #999;
                           -moz-box-shadow: 0px 0px 4px #999;
                           box-shadow: 0px 0px 4px #999;
                           -webkit-border-radius: 4px;
                           -moz-border-radius: 4px;
-                          border-radius: 4px">
+                          border-radius: 4px" {# djlint:on #}>
                 {% block email_content %}
                 {% endblock email_content %}
 
