@@ -5,6 +5,7 @@ from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
 from {{ cookiecutter.project_name }}.core import views as core_views
+from health_check.views import MainView
 
 urlpatterns = [
     path("", core_views.home, name="home"),
@@ -20,6 +21,7 @@ urlpatterns = [
     path("favicon.ico", core_views.favicon),
     path("mstile-150x150.png", core_views.favicon),
     path("safari-pinned-tab.svg", core_views.favicon),
+    path("health/", MainView.as_view()),
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),
 ]

@@ -40,6 +40,11 @@ THIRD_PARTY_APPS = [
     "django_tailwind_cli",
     "django_q",
     "django_q_registry"
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.migrations",
     "heroicons",
     "django_extensions",
     "django_browser_reload",

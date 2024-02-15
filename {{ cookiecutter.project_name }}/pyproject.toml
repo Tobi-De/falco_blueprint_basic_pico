@@ -33,6 +33,7 @@ dependencies = [
   "django-template-partials",
   "django-q2",
   "django-q-registry",
+  "django-health-check",
   "gunicorn",
   "heroicons[django]",
   "hiredis",
