@@ -37,8 +37,7 @@ def security_txt(request: HttpRequest) -> HttpResponse:
 @cache_control(max_age=ONE_DAY, immutable=True, public=True)
 def favicon(request: HttpRequest) -> HttpResponse | FileResponse:
     name = request.path.lstrip("/")
-    path = finders.find(name)
-    if path:
+    if path := finders.find(name):
         return FileResponse(Path(path).read_bytes())
     return HttpResponse(
         (
