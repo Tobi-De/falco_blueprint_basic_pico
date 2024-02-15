@@ -39,7 +39,8 @@ THIRD_PARTY_APPS = [
     "template_partials",
     "django_tailwind_cli",
     "django_q",
-    "django_q_registry",
+    "django_q_registry"
+    "heroicons",
     "django_extensions",
     "django_browser_reload",
     "debug_toolbar",
@@ -90,7 +91,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
-            "builtins": ["template_partials.templatetags.partials"],
+            "builtins": ["template_partials.templatetags.partials", "heroicons.templatetags.heroicons",],
         },
     },
 ]
