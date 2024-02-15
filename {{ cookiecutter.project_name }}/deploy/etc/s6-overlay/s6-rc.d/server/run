@@ -1,0 +1,5 @@
+#!/command/with-contenv execlineb
+
+cd /app
+foreground { falco setup-admin }
+gunicorn wsgi:application --config="deploy/gunicorn.conf.py"

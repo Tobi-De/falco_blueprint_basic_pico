@@ -32,6 +32,7 @@ dependencies = [
   "django-tailwind-cli",
   "django-template-partials",
   "django-q2",
+  "django-q-registry",
   "gunicorn",
   "hiredis",
   "Pillow",

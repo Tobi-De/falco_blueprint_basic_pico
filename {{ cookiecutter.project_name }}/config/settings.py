@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = [
     "template_partials",
     "django_tailwind_cli",
     "django_q",
+    "django_q_registry",
     "django_extensions",
     "django_browser_reload",
     "debug_toolbar",
