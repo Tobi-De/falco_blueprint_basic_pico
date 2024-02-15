@@ -21,7 +21,7 @@ dependencies = [
   "crispy-tailwind",
   "django[argon2]",
   "django-allauth",
-  "django-anymail",
+  "django-anymail[amazon-ses]",
   "django-browser-reload",
   "django-debug-toolbar",
   "django-environ",
