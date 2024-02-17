@@ -23,3 +23,17 @@ jobs:
 
       - name: Generate a project
         run: falco start-project test-project
+
+      - name: Install hatch
+        run: |
+          pip install hatch
+
+      - name: Install dependencies
+        run: |
+          cd test-project && hatch shell && falco sync-dotenv
+
+      - name: Run django checks
+        run: |
+          cd test-project && hatch run django check --fail-level WARNING
+
+
