@@ -30,10 +30,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd test-project && hatch shell && falco sync-dotenv
+          cd test_project && hatch shell && falco sync-dotenv
 
       - name: Run django checks
         run: |
-          cd test-project && hatch run django check --fail-level WARNING
+          cd test_project && hatch run django check --fail-level WARNING
 
 
