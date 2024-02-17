@@ -28,9 +28,9 @@ jobs:
         run: |
           pip install hatch
 
-      - name: Install dependencies
+      - name: Sync .env
         run: |
-          cd test_project && hatch shell && falco sync-dotenv
+          cd test_project && hatch run falco sync-dotenv
 
       - name: Run django checks
         run: |
