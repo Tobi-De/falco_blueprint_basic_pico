@@ -39,7 +39,7 @@ THIRD_PARTY_APPS = [
     "template_partials",
     "django_tailwind_cli",
     "django_q",
-    "django_q_registry"
+    "django_q_registry",
     "health_check",
     "health_check.db",
     "health_check.cache",
