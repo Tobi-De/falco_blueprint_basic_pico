@@ -21,8 +21,11 @@ jobs:
         run: |
           pip install falco-cli
 
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
       - name: Generate a project
-        run: falco start-project test-project
+        run: falco start-project test-project -b falco_blueprint_basic
 
       - name: Install hatch
         run: |
