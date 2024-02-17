@@ -34,6 +34,6 @@ jobs:
 
       - name: Run django checks
         run: |
-          cd test_project && hatch run django check --fail-level WARNING
+          cd test_project && hatch run python manage.py check --fail-level WARNING
 
 
