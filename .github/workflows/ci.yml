@@ -26,6 +26,7 @@ jobs:
 
       - name: Generate a project
         run: falco start-project test-project -b falco_blueprint_basic
+        working-directory: ./
 
       - name: Install hatch
         run: |
