@@ -23,6 +23,8 @@ jobs:
 
       - name: Checkout Code Repository
         uses: actions/checkout@v4
+        with:
+          clean: false
 
       - name: Generate a project
         run: falco start-project test-project -b falco_blueprint_basic
