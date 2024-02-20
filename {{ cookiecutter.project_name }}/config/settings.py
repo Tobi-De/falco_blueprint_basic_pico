@@ -369,7 +369,3 @@ if not DEBUG or env.bool("ENABLE_SENTRY", default=False):
 # -----------------------------------------------------------------------------------------------------
 
 ADMIN_URL = env.str("ADMIN_URL", default="admin/")
-
-SUPERUSER_EMAIL = env.str("SUPERUSER_EMAIL", default="{{ cookiecutter.author_email }}")
-
-SUPERUSER_PASSWORD = env.str("SUPERUSER_PASSWORD")
