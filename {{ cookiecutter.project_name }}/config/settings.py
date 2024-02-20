@@ -1,23 +1,69 @@
+import multiprocessing
+import sys
 import os
 from pathlib import Path
-import multiprocessing
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
-import environ
+import sentry_sdk
+from environ import Env
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+from {{ cookiecutter.project_name }}.core.sentry import sentry_profiles_sampler
+from {{ cookiecutter.project_name }}.core.sentry import sentry_traces_sampler
+
+# 0. Setup
+
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
 APPS_DIR = BASE_DIR / "{{ cookiecutter.project_name }}"
 
-env = environ.Env()
-environ.Env.read_env(BASE_DIR / ".env")
+env = Env()
+env.read_env(BASE_DIR / ".env")
 
-DJANGO_ENV = env.str("DJANGO_ENV", "dev")
-SECRET_KEY = env.str("DJANGO_SECRET_KEY")
-DEBUG = env.bool("DJANGO_DEBUG", default=False)
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
+# We should strive to only have two possible runtime scenarios: either `DEBUG`
+# is True or it is False. `DEBUG` should be only true in development, and
+# False when deployed, whether or not it's a production environment.
+DEBUG = env.bool("DEBUG", default=False)
+
+
+# 1. Django Core Settings
+# https://docs.djangoproject.com/en/4.0/ref/settings/
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"] if DEBUG else ["localhost"])
+
+ASGI_APPLICATION = "config.asgi.application"
+
+# Load cache from CACHE_URL or REDIS_URL
+if "CACHE_URL" in os.environ:
+    CACHES = {"default": env.cache("CACHE_URL")}
+elif "REDIS_URL" in os.environ:
+    CACHES = {"default": env.cache("REDIS_URL")}
+
+DATABASES = {
+    "default": env.db_url(
+        "DATABASE_URL",
+        default="sqlite:///db.sqlite3",
+    ),
+}
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
+
+if not DEBUG:
+    DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)   
+    DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+DEFAULT_FROM_EMAIL = env(
+    "DEFAULT_FROM_EMAIL",
+    default="{{ cookiecutter.author_email }}",
+)
+
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+    if DEBUG
+    else "anymail.backends.amazon_ses.EmailBackend"
+)
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -27,6 +73,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.forms",
 ]
 
 THIRD_PARTY_APPS = [
@@ -47,9 +94,6 @@ THIRD_PARTY_APPS = [
     "health_check.contrib.migrations",
     "heroicons",
     "django_extensions",
-    "django_browser_reload",
-    "debug_toolbar",
-    "django_fastdev",
 ]
 
 LOCAL_APPS = [
@@ -57,11 +101,66 @@ LOCAL_APPS = [
     "{{ cookiecutter.project_name }}.users",
 ]
 
+if DEBUG:
+    THIRD_PARTY_APPS = [
+        "debug_toolbar",
+        "whitenoise.runserver_nostatic",
+        "django_browser_reload",
+        "django_fastdev",
+    ] + THIRD_PARTY_APPS
+
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
+if DEBUG:
+    INTERNAL_IPS = [
+        "127.0.0.1",
+        "10.0.2.2",
+    ]
+
+LANGUAGE_CODE = "en-us"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "plain_console": {
+            "format": "%(levelname)s %(message)s",
+        },
+        "verbose": {
+            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+        },
+    },
+    "handlers": {
+        "stdout": {
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["stdout"],
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+        },
+        "{{ module_name }}": {
+            "handlers": ["stdout"],
+            "level": env("{{ module_name | upper }}_LOG_LEVEL", default="INFO"),
+        },
+    },
+}
+
+MEDIA_ROOT = APPS_DIR / "media"
+
+MEDIA_URL = "/media/"
+
+# https://docs.djangoproject.com/en/dev/topics/http/middleware/
+# https://docs.djangoproject.com/en/dev/ref/middleware/#middleware-ordering
 MIDDLEWARE = [
+    # should be first
+    "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    # order doesn't matter
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -70,54 +169,39 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    # should be last
+    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
+if DEBUG:
+    MIDDLEWARE.remove("django.middleware.cache.UpdateCacheMiddleware")
+    MIDDLEWARE.remove("django.middleware.cache.FetchFromCacheMiddleware")
 
-INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
-
-DEBUG_TOOLBAR_CONFIG = {
-    "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],
-    "SHOW_TEMPLATE_CONTEXT": True,
-    "ROOT_TAG_EXTRA_ATTRS": "hx-preserve",
-}
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index("django.middleware.common.CommonMiddleware") + 1,
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    )
 
 ROOT_URLCONF = "config.urls"
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [str(APPS_DIR / "templates")],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-            "builtins": ["template_partials.templatetags.partials", "heroicons.templatetags.heroicons",],
-        },
-    },
-]
+SECRET_KEY = env("SECRET_KEY", default="2hnT50eJkdaYy_PuwGArmlLNAlnhE8uuhaJ8V5Hfth83-0C3XkEVn3XS82w88A3NiHvwr2EKKfUU5LWCFvO0Jw")
 
-WSGI_APPLICATION = "config.wsgi.application"
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 
-DATABASES = {
-    "default": env.db(
-        "DATABASE_URL", default="postgres:///{{ cookiecutter.project_name }}"
-    )
-}
-DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+SECURE_HSTS_PRELOAD = not DEBUG
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [APPS_DIR / "static"]
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
+# https://docs.djangoproject.com/en/dev/ref/middleware/#http-strict-transport-security
+# 2 minutes to start with, will increase as HSTS is tested
+# example of production value: 60 * 60 * 24 * 7 = 604800 (1 week)
+SECURE_HSTS_SECONDS = 0 if DEBUG else env.bool("SECURE_HSTS_SECONDS", default=60 * 2)
+
+# https://noumenal.es/notes/til/django/csrf-trusted-origins/
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
+
+SESSION_COOKIE_SECURE = not DEBUG
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -127,35 +211,130 @@ STORAGES = {
     },
 }
 
-MEDIA_ROOT = str(APPS_DIR / "media")
-MEDIA_URL = "/media/"
+# https://nickjanetakis.com/blog/django-4-1-html-templates-are-cached-by-default-with-debug-true
+DEFAULT_LOADERS = [
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",
+]
 
-AUTH_USER_MODEL = "users.User"
+CACHED_LOADERS = [("django.template.loaders.cached.Loader", DEFAULT_LOADERS)]
 
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            str(APPS_DIR / "templates")
+        ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+            "builtins": ["template_partials.templatetags.partials", "heroicons.templatetags.heroicons"],
+            "debug": DEBUG,
+            "loaders": [
+                (
+                    "template_partials.loader.Loader",
+                    DEFAULT_LOADERS if DEBUG else CACHED_LOADERS,
+                )
+            ],
+        },
+    },
+]
+
+TIME_ZONE = "UTC"
+
+USE_I18N = False
+
+USE_TZ = True
+
+WSGI_APPLICATION = "config.wsgi.application"
+
+# 2. Django Contrib Settings
+
+# django.contrib.auth
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-LOGIN_URL = "account_login"
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+if DEBUG:
+    AUTH_PASSWORD_VALIDATORS = []
 
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
+AUTH_USER_MODEL = "users.User"
+
+# django.contrib.staticfiles
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    APPS_DIR / "static"
+]
+
+# 3. Third Party Settings
+
+# django-allauth
 ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http" if DEBUG else "https"
+
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+
 ACCOUNT_FORMS = {"signup": "{{ cookiecutter.project_name }}.users.forms.UserSignupForm"}
 
-EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND",
-    default="django.core.mail.backends.console.EmailBackend",
-)
+ACCOUNT_LOGOUT_REDIRECT_URL = "account_login"
 
+ACCOUNT_SESSION_REMEMBER = True
+
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+
+ACCOUNT_UNIQUE_EMAIL = True
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
+ACCOUNT_USERNAME_REQUIRED = False
+
+LOGIN_REDIRECT_URL = "home"
+
+# django-anymail
+if not DEBUG:
+    ANYMAIL = {
+        "AMAZON_SES_CLIENT_PARAMS": {
+            "aws_access_key_id": env.str("AWS_ACCESS_KEY_ID"),
+            "aws_secret_access_key": env.str("AWS_SECRET_ACCESS_KEY"),
+            "region_name": env.str("AWS_S3_REGION_NAME"),
+        }
+    }
+
+# django-crispy-forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
 CRISPY_TEMPLATE_PACK = "tailwind"
 
-SUPERUSER_EMAIL = env.str("DJANGO_SUPERUSER_EMAIL")
-SUPERUSER_PASSWORD = env.str("DJANGO_SUPERUSER_PASSWORD")
+# django-debug-toolbar
+DEBUG_TOOLBAR_CONFIG = {
+    "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],
+    "SHOW_TEMPLATE_CONTEXT": True,
+    "ROOT_TAG_EXTRA_ATTRS": "hx-preserve",
+}
 
 # django-q2
 Q_CLUSTER = {
@@ -169,68 +348,24 @@ Q_CLUSTER = {
 }
 
 
-if DJANGO_ENV == "production":
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-
-    ADMIN_URL = env.str("ADMIN_URL")
-
-    # Load cache from CACHE_URL or REDIS_URL
-    if "CACHE_URL" in os.environ:
-        CACHES = {"default": env.cache("CACHE_URL")}
-    elif "REDIS_URL" in os.environ:
-        CACHES = {"default": env.cache("REDIS_URL")}
-
-    # Security
-    CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS")
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-
-    # password validation
-    AUTH_PASSWORD_VALIDATORS = [
-        {
-            "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-        },
-        {
-            "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        },
-        {
-            "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-        },
-        {
-            "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-        },
-    ]
-
-    # HTTPS only behind a proxy that terminates SSL/TLS
-    SECURE_SSL_REDIRECT = True
-    SECURE_REDIRECT_EXEMPT = [r"^-/"]
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_PRELOAD = True
-    # Only set this to True if you are certain that all subdomains of your domain should be served exclusively via SSL.
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
-        "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=False
-    )
-
-    # email
-    EMAIL_BACKEND = "anymail.backends.amazon_ses.EmailBackend"
-    ANYMAIL = {
-        "AMAZON_SES_CLIENT_PARAMS": {
-            "aws_access_key_id": env.str("DJANGO_AWS_ACCESS_KEY_ID"),
-            "aws_secret_access_key": env.str("DJANGO_AWS_SECRET_ACCESS_KEY"),
-            "region_name": env.str("DJANGO_AWS_S3_REGION_NAME"),
-        }
-    }
-
-    # sentry
+# sentry
+if not DEBUG or env.bool("ENABLE_SENTRY", default=False):
     sentry_sdk.init(
-        dsn=env.url("SENTRY_DSN"),
-        integrations=[DjangoIntegration()],
-        environment=env.str("SENTRY_ENVIRONMENT", default="production"),
-        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
-        auto_session_tracking=False,
-        release="1.0.0",
+        dsn=env("SENTRY_DSN", default=None),
+        environment=env("SENTRY_ENV", default=None),
+        integrations=[
+            DjangoIntegration(),
+            LoggingIntegration(event_level=None, level=None),
+        ],
+        traces_sampler=sentry_traces_sampler,
+        profiles_sampler=sentry_profiles_sampler,
+        send_default_pii=True,
     )
+
+# 4. Project Settings
+
+ADMIN_URL = env.str("ADMIN_URL", default="admin/")
+
+SUPERUSER_EMAIL = env.str("SUPERUSER_EMAIL")
+
+SUPERUSER_PASSWORD = env.str("SUPERUSER_PASSWORD")
