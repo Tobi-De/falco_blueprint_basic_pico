@@ -142,9 +142,9 @@ LOGGING = {
             "handlers": ["stdout"],
             "level": env("DJANGO_LOG_LEVEL", default="INFO"),
         },
-        "{{ module_name }}": {
+        "{{ cookiecutter.project_name }}": {
             "handlers": ["stdout"],
-            "level": env("{{ module_name | upper }}_LOG_LEVEL", default="INFO"),
+            "level": env("{{ cookiecutter.project_name | upper }}_LOG_LEVEL", default="INFO"),
         },
     },
 }
