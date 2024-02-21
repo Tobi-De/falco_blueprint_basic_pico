@@ -45,7 +45,7 @@ elif "REDIS_URL" in os.environ:
 DATABASES = {
     "default": env.db_url(
         "DATABASE_URL",
-        default="sqlite:///db.sqlite3",
+        default="postgres:///{{ cookiecutter.project_name }}"
     ),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
