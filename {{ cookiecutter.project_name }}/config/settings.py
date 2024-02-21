@@ -51,10 +51,10 @@ DATABASES = {
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 if not DEBUG:
-    DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)   
+    DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
     DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
 
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DEFAULT_FROM_EMAIL = env(
     "DEFAULT_FROM_EMAIL",
