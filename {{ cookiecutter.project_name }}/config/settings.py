@@ -12,6 +12,7 @@ from {{ cookiecutter.project_name }}.core.sentry import sentry_profiles_sampler
 from {{ cookiecutter.project_name }}.core.sentry import sentry_traces_sampler
 
 # 0. Setup
+# --------------------------------------------------------------------------------------------
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -28,6 +29,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 
 # 1. Django Core Settings
+# -----------------------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/4.0/ref/settings/
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"] if DEBUG else ["localhost"])
@@ -254,6 +256,7 @@ USE_TZ = True
 WSGI_APPLICATION = "config.wsgi.application"
 
 # 2. Django Contrib Settings
+# -----------------------------------------------------------------------------------------------
 
 # django.contrib.auth
 AUTHENTICATION_BACKENDS = [
@@ -290,6 +293,7 @@ STATICFILES_DIRS = [
 ]
 
 # 3. Third Party Settings
+# -------------------------------------------------------------------------------------------------
 
 # django-allauth
 ACCOUNT_AUTHENTICATION_METHOD = "email"
@@ -363,9 +367,10 @@ if not DEBUG or env.bool("ENABLE_SENTRY", default=False):
     )
 
 # 4. Project Settings
+# -----------------------------------------------------------------------------------------------------
 
 ADMIN_URL = env.str("ADMIN_URL", default="admin/")
 
-SUPERUSER_EMAIL = env.str("SUPERUSER_EMAIL")
+SUPERUSER_EMAIL = env.str("SUPERUSER_EMAIL", default="{{ cookiecutter.author_email }}")
 
 SUPERUSER_PASSWORD = env.str("SUPERUSER_PASSWORD")
