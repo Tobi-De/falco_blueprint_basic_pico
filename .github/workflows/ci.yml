@@ -19,7 +19,7 @@ jobs:
 
       - name: Install falco
         run: |
-          pip install falco-cli
+          pip install falco-cli --pre
 
       - name: Checkout Code Repository
         uses: actions/checkout@v4
