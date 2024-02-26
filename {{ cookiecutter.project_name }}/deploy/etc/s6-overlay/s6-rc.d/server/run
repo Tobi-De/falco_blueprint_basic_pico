@@ -1,5 +1,5 @@
 #!/command/with-contenv execlineb
 
 cd /app
-foreground { falco setup-admin }
+foreground { python manage.py createsuperuser --noinput }
 gunicorn wsgi:application --config="deploy/gunicorn.conf.py"
