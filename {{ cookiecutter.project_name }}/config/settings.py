@@ -109,7 +109,8 @@ if DEBUG:
         "whitenoise.runserver_nostatic",
         "django_browser_reload",
         "django_fastdev",
-    ] + THIRD_PARTY_APPS
+        *THIRD_PARTY_APPS,
+    ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 

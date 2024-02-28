@@ -23,11 +23,11 @@ def sentry_profiles_sampler(sampling_context):
 
 
 def _should_disgard(sampling_context) -> bool:
-    DISGARDED_METHODS = ["GET", "HEAD"]
-    DISGARDED_PATHS = ["/health/"]
+    disgarded_methods = ["GET", "HEAD"]
+    disgarded_paths = ["/health/"]
 
     return (
         sampling_context.get("wsgi_environ", None)
-        and sampling_context["wsgi_environ"]["REQUEST_METHOD"] in DISGARDED_METHODS
-        and sampling_context["wsgi_environ"]["PATH_INFO"] in DISGARDED_PATHS
+        and sampling_context["wsgi_environ"]["REQUEST_METHOD"] in disgarded_methods
+        and sampling_context["wsgi_environ"]["PATH_INFO"] in disgarded_paths
     )
