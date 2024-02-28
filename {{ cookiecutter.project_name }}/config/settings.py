@@ -171,13 +171,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     # should be last
     "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 if DEBUG:
     MIDDLEWARE.remove("django.middleware.cache.UpdateCacheMiddleware")
     MIDDLEWARE.remove("django.middleware.cache.FetchFromCacheMiddleware")
+    MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
 
     MIDDLEWARE.insert(
         MIDDLEWARE.index("django.middleware.common.CommonMiddleware") + 1,
