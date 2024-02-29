@@ -6,7 +6,7 @@ from django.test.utils import override_settings
 pytest_plugins = []  # type: ignore
 
 
-def pytest_configure(_):
+def pytest_configure(config):
     logging.disable(logging.CRITICAL)
 
 
