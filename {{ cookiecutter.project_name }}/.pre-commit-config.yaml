@@ -43,12 +43,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: mypy
-        name: Run mypy
-        entry: hatch run mypy
-        language: system
-        files: \.py$
-
       - id: hatch fmt
         name: run hatch fmt
         entry: hatch fmt
