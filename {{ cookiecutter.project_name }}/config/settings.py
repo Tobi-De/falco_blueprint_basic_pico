@@ -42,6 +42,8 @@ if "CACHE_URL" in os.environ:
 elif "REDIS_URL" in os.environ:
     CACHES = {"default": env.dj_cache_url("REDIS_URL")}
 
+CSRF_COOKIE_SECURE = not DEBUG
+
 DATABASES = {
     "default": env.dj_db_url(
         "DATABASE_URL",
@@ -200,6 +202,8 @@ SECURE_HSTS_SECONDS = 0 if DEBUG else env.int("SECURE_HSTS_SECONDS", default=60 
 
 # https://noumenal.es/notes/til/django/csrf-trusted-origins/
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SECURE_SSL_REDIRECT = not DEBUG
 
 SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 
