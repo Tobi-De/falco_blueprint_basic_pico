@@ -32,10 +32,6 @@ jobs:
         run: |
           pip install hatch
 
-      - name: Sync .env
-        run: |
-          cd test_project && hatch run falco sync-dotenv
-
       - name: Run django checks
         run: |
           cd test_project && hatch run python manage.py check --fail-level WARNING
