@@ -23,7 +23,7 @@ urlpatterns = [
     path("safari-pinned-tab.svg", core_views.favicon),
     path("health/", MainView.as_view()),
     path("accounts/", include("allauth.urls")),
-    path("admin/", admin.site.urls),
+    path(settings.ADMIN_URL, admin.site.urls),
 ]
 
 if settings.DEBUG:

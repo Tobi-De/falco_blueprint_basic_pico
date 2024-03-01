@@ -1,52 +1,72 @@
 name: CI
 
-# Enable Buildkit and let compose use it to speed up image building
 env:
+  # Enable Buildkit and let compose use it to speed up image building
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
   pull_request:
-    branches: ['master', 'main']
-    paths-ignore: ['docs/**']
+    branches: ["master", "main"]
+    paths-ignore: ["docs/**"]
 
   push:
-    branches: ['master', 'main']
-    paths-ignore: ['docs/**']
+    branches: ["master", "main"]
+    paths-ignore: ["docs/**"]
+
+  workflow_dispatch:
 
 concurrency:
   group: {% raw %}${{ github.head_ref || github.run_id }}{% endraw %}
   cancel-in-progress: true
 
 jobs:
-  linter:
+  types:
     runs-on: ubuntu-latest
-
+    env:
+      DEBUG: True
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
       - name: Install hatch
         run: |
           pip install hatch
-      - name: Create static analysis environment # this step creates the static analysis environment ahead of time to handle cases where hatch fmt fails in pre-commit
+      - name: Run mypy
         run: |
-          hatch fmt
-      - name: Add .env file # mypy fails without this
-        run: |
-          pip install falco-cli && falco sync-dotenv
-      - name: Run pre-commit
-        run: |
-          hatch run pre-commit run --all-files
+          hatch run mypy .
 
-  # With no caching at all the entire ci process takes 4m 30s to complete!
+  checks:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ""
+      AWS_SECRET_ACCESS_KEY: ""
+      AWS_S3_REGION_NAME: ""
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+      - name: Install hatch
+        run: |
+          pip install hatch
+      - name: Run deployment checks
+        run: |
+          hatch run python manage.py check --deploy
+
   pytest:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:15
@@ -54,26 +74,21 @@ jobs:
           - 5432:5432
         env:
           POSTGRES_PASSWORD: postgres
-
     env:
-      # postgres://user:password@host:port/database
-      DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
-
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
+      DEBUG: True
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: |
-            pyproject.toml
-
+            requirements.txt
       - name: Install hatch
         run: |
           pip install hatch
-
       - name: Test with pytest
         run: hatch run test:test

@@ -31,10 +31,11 @@ RUN tar -C /s6-install -Jxpf /tmp/s6-overlay-noarch.tar.xz
 RUN tar -C /s6-install -Jxpf /tmp/s6-overlay-x86_64.tar.xz
 
 # Build static files
+ENV DEBUG=True
 COPY . /app
 WORKDIR /app
-RUN python manage.py tailwind build
-RUN python manage.py collectstatic --no-input
+RUN python manage.py tailwind build --skip-checks
+RUN python manage.py collectstatic --no-input --skip-checks
 
 # Stage 3: Run service
 FROM python-base as production
