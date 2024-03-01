@@ -6,7 +6,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 import sentry_sdk
-from environ import Env
+from environs import Env
 
 from {{ cookiecutter.project_name }}.core.sentry import sentry_profiles_sampler
 from {{ cookiecutter.project_name }}.core.sentry import sentry_traces_sampler
@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 APPS_DIR = BASE_DIR / "{{ cookiecutter.project_name }}"
 
 env = Env()
-env.read_env(BASE_DIR / ".env")
+env.read_env(Path(BASE_DIR, ".env").as_posix())
 
 
 # We should strive to only have two possible runtime scenarios: either `DEBUG`
@@ -38,12 +38,12 @@ ASGI_APPLICATION = "config.asgi.application"
 
 # Load cache from CACHE_URL or REDIS_URL
 if "CACHE_URL" in os.environ:
-    CACHES = {"default": env.cache("CACHE_URL")}
+    CACHES = {"default": env.dj_cache_url("CACHE_URL")}
 elif "REDIS_URL" in os.environ:
-    CACHES = {"default": env.cache("REDIS_URL")}
+    CACHES = {"default": env.dj_cache_url("REDIS_URL")}
 
 DATABASES = {
-    "default": env.db_url(
+    "default": env.dj_db_url(
         "DATABASE_URL",
         default="postgres:///{{ cookiecutter.project_name }}"
     ),
@@ -196,7 +196,7 @@ SECURE_HSTS_PRELOAD = not DEBUG
 # https://docs.djangoproject.com/en/dev/ref/middleware/#http-strict-transport-security
 # 2 minutes to start with, will increase as HSTS is tested
 # example of production value: 60 * 60 * 24 * 7 = 604800 (1 week)
-SECURE_HSTS_SECONDS = 0 if DEBUG else env.bool("SECURE_HSTS_SECONDS", default=60 * 2)
+SECURE_HSTS_SECONDS = 0 if DEBUG else env.int("SECURE_HSTS_SECONDS", default=60 * 2)
 
 # https://noumenal.es/notes/til/django/csrf-trusted-origins/
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
