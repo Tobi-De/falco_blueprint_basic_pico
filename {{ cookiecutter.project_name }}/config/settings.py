@@ -189,7 +189,7 @@ if DEBUG:
 
 ROOT_URLCONF = "config.urls"
 
-SECRET_KEY = env("SECRET_KEY", default="{{ cookiecuttter.secret_key }}")
+SECRET_KEY = env("SECRET_KEY", default="{{ cookiecutter.secret_key }}")
 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 
