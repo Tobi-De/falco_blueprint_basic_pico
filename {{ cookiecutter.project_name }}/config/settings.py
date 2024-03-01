@@ -47,7 +47,7 @@ CSRF_COOKIE_SECURE = not DEBUG
 DATABASES = {
     "default": env.dj_db_url(
         "DATABASE_URL",
-        default="postgres:///{{ cookiecutter.project_name }}"
+        default="sqlite:///db.sqlite3"
     ),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
