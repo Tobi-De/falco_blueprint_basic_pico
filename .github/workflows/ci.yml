@@ -51,9 +51,18 @@ jobs:
         run: |
           pip install falco-cli --pre
 
+      - name: Install hatch
+        run: |
+          pip install hatch
+
       - name: Generate a project
         run: falco start-project test-project -b /home/runner/work/falco_blueprint_basic/falco_blueprint_basic --skip-new-version-check
         working-directory: ./
+
+      - name: Generate requirements.txt
+        run: |
+          cd test_project
+          hatch run python --version
 
       - name: Build image
         run: |
