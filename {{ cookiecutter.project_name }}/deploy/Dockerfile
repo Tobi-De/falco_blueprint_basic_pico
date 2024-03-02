@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED=1 \
     S6_OVERLAY_VERSION=3.1.6.2 \
     S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
 
-ENV PATH="$VENV_PATH/bin:$PATH" 
+ENV PATH="$VENV_PATH/bin:$PATH"
 
 # Stage 2: Install dependencies & build static files
 FROM python-base as builder-base
@@ -34,7 +34,7 @@ RUN tar -C /s6-install -Jxpf /tmp/s6-overlay-x86_64.tar.xz
 ENV DEBUG=True
 COPY . /app
 WORKDIR /app
-RUN python manage.py tailwind build --skip-checks
+RUN python manage.py tailwind build
 RUN python manage.py collectstatic --no-input --skip-checks
 
 # Stage 3: Run service
