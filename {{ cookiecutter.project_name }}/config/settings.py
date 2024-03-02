@@ -86,7 +86,6 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "django_htmx",
     "template_partials",
-    "django_tailwind_cli",
     "django_q",
     "django_q_registry",
     "health_check",
@@ -329,11 +328,6 @@ if not DEBUG:
             "region_name": env.str("AWS_S3_REGION_NAME"),
         }
     }
-
-# django-crispy-forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-
-CRISPY_TEMPLATE_PACK = "tailwind"
 
 # django-debug-toolbar
 DEBUG_TOOLBAR_CONFIG = {
