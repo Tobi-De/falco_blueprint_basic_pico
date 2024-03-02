@@ -7,6 +7,8 @@ on:
   push:
     branches: ['master', 'main']
 
+  workflow_dispatch:
+
 jobs:
   create-project:
     runs-on: ubuntu-latest
