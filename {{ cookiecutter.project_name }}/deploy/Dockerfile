@@ -6,7 +6,6 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
     PYSETUP_PATH="/opt/pysetup" \
-    TAILWIND_CLI_PATH="/opt/tailwind" \
     VENV_PATH="/opt/pysetup/.venv" \
     S6_KILL_GRACETIME=0 \
     S6_OVERLAY_VERSION=3.1.6.2 \
@@ -35,7 +34,6 @@ RUN tar -C /s6-install -Jxpf /tmp/s6-overlay-x86_64.tar.xz
 ENV DEBUG=True
 COPY . /app
 WORKDIR /app
-RUN python manage.py tailwind build
 RUN python manage.py collectstatic --no-input --skip-checks
 
 # Stage 3: Run service

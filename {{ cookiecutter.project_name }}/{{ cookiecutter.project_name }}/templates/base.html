@@ -1,6 +1,5 @@
 {% raw %}{% load static %}
 {% load django_htmx %}
-{% load tailwind_cli %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +9,10 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     {% endraw %}<title>{{ cookiecutter.project_name }}</title>{% raw %}
-    {% tailwind_css %}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css"
+    />
     {% block css %}
     {% endblock css %}
     <script defer src="{% static 'vendors/htmx/htmx.min.js' %}"></script>
@@ -23,7 +25,7 @@
     {% block header %}
     {% endblock header %}
 
-    <main class="container mx-auto"> 
+    <main>
       {% block content %}
       {% endblock content %}
     </main>
@@ -33,7 +35,7 @@
 
     {% block modal %}
     {% endblock modal %}
-      
+
     {% block inline_javascript %}
     {% endblock inline_javascript %}
   </body>

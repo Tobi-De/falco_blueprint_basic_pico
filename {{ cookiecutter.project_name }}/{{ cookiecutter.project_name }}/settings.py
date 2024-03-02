@@ -84,8 +84,6 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "crispy_forms",
-    "crispy_tailwind",
     "django_htmx",
     "template_partials",
     "django_tailwind_cli",

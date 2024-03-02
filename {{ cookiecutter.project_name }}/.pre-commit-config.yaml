@@ -48,13 +48,3 @@ repos:
         entry: hatch fmt
         language: system
         files: \.py
-
-      - id: rustywind
-        name: rustywind Tailwind CSS class linter
-        language: node
-        additional_dependencies:
-          - rustywind@latest
-        entry: rustywind
-        args: [--write]
-        types_or: [html]
-
