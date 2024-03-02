@@ -8,7 +8,7 @@ on:
     branches: ['master', 'main']
 
 jobs:
-  test:
+  create-project:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,5 +35,24 @@ jobs:
       - name: Run django checks
         run: |
           cd test_project && hatch run python manage.py check --fail-level WARNING
+
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Install falco
+        run: |
+          pip install falco-cli --pre
+
+      - name: Generate a project
+        run: falco start-project test-project -b /home/runner/work/falco_blueprint_basic/falco_blueprint_basic --skip-new-version-check
+        working-directory: ./
+
+      - name: Build image
+        run: |
+          cd test_project
+          docker build . -f docker/Dockerfile
 
 
