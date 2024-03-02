@@ -58,6 +58,6 @@ jobs:
       - name: Build image
         run: |
           cd test_project
-          docker build . -f docker/Dockerfile
+          docker build . -f deploy/Dockerfile
 
 
