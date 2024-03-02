@@ -44,6 +44,9 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
 
+      - name: Setup docker
+        uses: docker-practice/actions-setup-docker@master
+
       - name: Install falco
         run: |
           pip install falco-cli --pre
@@ -53,7 +56,6 @@ jobs:
         working-directory: ./
 
       - name: Build image
-        uses: docker-practice/actions-setup-docker@master
         run: |
           cd test_project
           docker build . -f docker/Dockerfile
