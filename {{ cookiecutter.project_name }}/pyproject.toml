@@ -26,7 +26,6 @@ dependencies = [
   "django-fastdev",
   "django-htmx",
   "django-model-utils",
-  "django-tailwind-cli",
   "django-template-partials",
   "django-q2",
   "django-q-registry",
@@ -35,7 +34,6 @@ dependencies = [
   "heroicons[django]",
   "gunicorn",
   "boto3",
-  "crispy-tailwind",
   "hiredis",
   "Pillow",
   "psycopg[binary]",
@@ -82,7 +80,6 @@ htmx = "{{ cookiecutter.project_name }}/static/vendors/htmx/htmx.min.js"
 
 [tool.falco.work]
 server = "python manage.py migrate && python manage.py runserver"
-tailwind = "python manage.py tailwind watch"
 worker = "python manage.py qcluster"
 
 [tool.hatch.env]
@@ -101,7 +98,7 @@ lock-filename = "requirements.txt"
 dependencies = ["dj-notebook>=0.6.1", "Werkzeug[watchdog]>=3.0.1", "pre-commit", "django-stubs[compatible-mypy]", "falco-cli"]
 
 [tool.hatch.envs.default.scripts]
-runserver = ["migrate", "python manage.py tailwind runserver {args}"]
+runserver = ["migrate", "python manage.py runserver {args}"]
 migrate = "python manage.py migrate {args}"
 makemigrations = "python manage.py makemigrations {args}"
 reset-db = "python manage.py reset_db --noinput"
