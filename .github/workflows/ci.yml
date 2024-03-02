@@ -51,6 +51,7 @@ jobs:
         working-directory: ./
 
       - name: Build image
+        uses: docker-practice/actions-setup-docker@master
         run: |
           cd test_project
           docker build . -f docker/Dockerfile
