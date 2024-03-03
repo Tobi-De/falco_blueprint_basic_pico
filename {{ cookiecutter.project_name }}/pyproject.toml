@@ -82,6 +82,9 @@ htmx = "{{ cookiecutter.project_name }}/static/vendors/htmx/htmx.min.js"
 server = "python manage.py migrate && python manage.py runserver"
 worker = "python manage.py qcluster"
 
+[tool.falco.crud]
+blueprints = "blueprints"
+
 [tool.hatch.env]
 requires = [
   "hatch-pip-compile>=1.11.1"

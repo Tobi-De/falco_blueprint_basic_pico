@@ -1,0 +1,27 @@
+{% raw %}
+{% extends "base.html" %}
+
+{% block content %}
+
+    <section>
+{% endraw %}
+        <h1>{{ model_name}} - {% raw %}{{ {% endraw %} {{ model_name|lower }} {% raw %} }}{% endraw %} </h1>
+        <a href="{{list_view_url|safe}}" >
+            All {{model_verbose_name_plural|capitalize}}
+        </a>
+    </section>
+
+    <ul>
+        {% for field_verbose_name, field_accessor in fields_verbose_name_with_accessor.items() %}
+            <li>
+                <span >{{ field_verbose_name }}:</span> {{ field_accessor }}
+            </li>
+        {% endfor %}
+    </ul>
+
+
+    <a href="{{ update_view_url|safe }}">Edit</a>
+
+{% raw %}
+{% endblock content %}
+{% endraw %}

@@ -1,0 +1,23 @@
+{% raw %}
+{%  extends "base.html" %}
+
+{% block content %}
+    <section>
+        {% endraw %}
+        <h1> {{ model_name}} Update - {% raw %}{{{% endraw %} {{ model_name|lower }} {% raw %}}}{% endraw %}</h1>
+
+        <a href="{{list_view_url|safe}}">
+            All {{model_verbose_name_plural|capitalize}}
+        </a>
+    </section>
+
+{% raw %}
+    <form method="post">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" >
+            Save
+        </button>
+    </form>
+{% endblock content %}
+{% endraw %}
