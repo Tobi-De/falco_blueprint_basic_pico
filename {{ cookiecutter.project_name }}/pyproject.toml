@@ -97,7 +97,6 @@ python = ["3.11", "3.12"]
 type = "pip-compile"
 pip-compile-constraint = "default"
 pip-compile-installer = "pip-sync"
-lock-filename = "requirements.txt"
 dependencies = ["dj-notebook>=0.6.1", "Werkzeug[watchdog]>=3.0.1", "pre-commit", "django-stubs[compatible-mypy]", "falco-cli"]
 
 [tool.hatch.envs.default.scripts]
