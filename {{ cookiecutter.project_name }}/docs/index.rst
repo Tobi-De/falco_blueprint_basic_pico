@@ -6,5 +6,10 @@
 
    applications/index
 
+-----
 
-`Quick introduction to reStructuredText <https://docutils.sourceforge.io/docs/user/rst/quickref.html>`_
+**Useful links**
+
+- `Quick introduction to reStructuredText <https://docutils.sourceforge.io/docs/user/rst/quickref.html>`_
+- `Falco CLI documentation <https://falco.oluwatobi.dev/the_cli/start_project>`_
+- `Sphinx design <https://sphinx-design.readthedocs.io>`_
