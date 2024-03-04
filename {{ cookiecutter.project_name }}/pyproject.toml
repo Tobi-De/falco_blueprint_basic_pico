@@ -96,9 +96,9 @@ python = ["3.11", "3.12"]
 [tool.hatch.envs.default]
 type = "pip-compile"
 pip-compile-constraint = "default"
-# pip-compile-installer = "pip-sync"
-pip-compile-installer = "uv"
-pip-compile-resolver = "uv"
+pip-compile-installer = "pip-sync"
+# pip-compile-installer = "uv"
+# pip-compile-resolver = "uv"
 dependencies = ["dj-notebook>=0.6.1", "Werkzeug[watchdog]>=3.0.1", "pre-commit", "django-stubs[compatible-mypy]", "falco-cli"]
 
 [tool.hatch.envs.default.scripts]
