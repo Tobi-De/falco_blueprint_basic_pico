@@ -96,7 +96,6 @@ python = ["3.11", "3.12"]
 [tool.hatch.envs.default]
 type = "pip-compile"
 pip-compile-constraint = "default"
-# pip-compile-installer = "pip-sync"
 pip-compile-installer = "uv"
 pip-compile-resolver = "uv"
 dependencies = ["dj-notebook>=0.6.1", "Werkzeug[watchdog]>=3.0.1", "pre-commit", "django-stubs[compatible-mypy]", "falco-cli"]
@@ -111,12 +110,12 @@ upgrade-deps = ["rm requirements.txt", "hatch env run --env default -- python --
 
 [tool.hatch.envs.docs]
 dependencies = [
+    "furo",
     "sphinx",
     "sphinx-autobuild",
-    "furo", "sphinx-copybutton",
+    "sphinx-copybutton",
     "sphinx-design",
     "myst-parser",
-    "sphinx-inline-tabs"
 ]
 
 [tool.hatch.envs.docs.scripts]

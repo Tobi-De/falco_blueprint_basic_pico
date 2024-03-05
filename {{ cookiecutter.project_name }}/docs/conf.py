@@ -36,7 +36,6 @@ release = '2024'
 extensions = [
     "myst_parser",
     "sphinx_copybutton",
-    "sphinx_inline_tabs",
     "sphinx.ext.autodoc",
     "sphinx_design",
 ]
