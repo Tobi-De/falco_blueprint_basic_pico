@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install falco
         run: |
@@ -25,6 +25,9 @@ jobs:
 
       - name: Checkout Code Repository
         uses: actions/checkout@v4
+
+      # - name: Debugging with ssh
+      #   uses: lhotari/action-upterm@v1
 
       - name: Generate a project
         run: falco start-project test-project -b /home/runner/work/falco_blueprint_basic/falco_blueprint_basic --skip-new-version-check
