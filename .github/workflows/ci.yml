@@ -30,11 +30,7 @@ jobs:
       #   uses: lhotari/action-upterm@v1
 
       - name: Generate a project
-<<<<<<< HEAD
         run: falco start-project test-project -b . --skip-new-version-check
-=======
-        run: falco start-project test-project -b /home/runner/work/falco_blueprint_basic_pico/falco_blueprint_basic_pico --skip-new-version-check
->>>>>>> a2b6e82 (fix ci to use the right directory)
         working-directory: ./
 
       - name: Install hatch
