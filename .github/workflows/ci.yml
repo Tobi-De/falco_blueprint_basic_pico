@@ -30,7 +30,7 @@ jobs:
       #   uses: lhotari/action-upterm@v1
 
       - name: Generate a project
-        run: falco start-project test-project -b /home/runner/work/falco_blueprint_basic/falco_blueprint_basic --skip-new-version-check
+        run: falco start-project test-project -b . --skip-new-version-check
         working-directory: ./
 
       - name: Install hatch
@@ -59,7 +59,7 @@ jobs:
           pip install hatch
 
       - name: Generate a project
-        run: falco start-project test-project -b /home/runner/work/falco_blueprint_basic/falco_blueprint_basic --skip-new-version-check
+        run: falco start-project test-project -b . --skip-new-version-check
         working-directory: ./
 
       - name: Generate requirements.txt
