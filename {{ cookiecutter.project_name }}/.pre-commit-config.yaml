@@ -43,7 +43,7 @@ repos:
 
   - repo: local
     hooks:
-      - id: hatch fmt
+      - id: hatch-fmt
         name: run hatch fmt
         entry: hatch fmt
         language: system
