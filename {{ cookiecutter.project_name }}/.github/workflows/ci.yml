@@ -1,10 +1,5 @@
 name: CI
 
-env:
-  # Enable Buildkit and let compose use it to speed up image building
-  DOCKER_BUILDKIT: 1
-  COMPOSE_DOCKER_CLI_BUILD: 1
-
 on:
   pull_request:
     branches: ["master", "main"]
