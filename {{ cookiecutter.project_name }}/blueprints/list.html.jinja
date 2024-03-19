@@ -27,11 +27,11 @@
                 {% raw %}
             </thead>
             <tbody>
-                {% for {% endraw %}{{ model_name|lower }} in {{model_name|lower}}s_page {% raw %} %}
+                {% for {% endraw %}{{ model_name|lower }} in {{{model_name_plural|lower}}_page {% raw %} %}
                   {% endraw %}
                     <tr >
-                        {% for _, field_accessor in fields_verbose_name_with_accessor.items() %}
-                         <td>{{field_accessor}}</td>
+                        {% for _, field_data in model_fields.items() %}
+                         <td>{{field_data["accessor"]}}</td>
                        {% endfor %}
                         <td>
                          {% raw %}
