@@ -1,12 +1,16 @@
 import multiprocessing
 import sys
 import os
+
+from email.utils import parseaddr
 from pathlib import Path
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
 
 import sentry_sdk
 from environs import Env
+from marshmallow.validate import Email
+from marshmallow.validate import OneOf
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 from {{ cookiecutter.project_name }}.core.sentry import sentry_profiles_sampler
 from {{ cookiecutter.project_name }}.core.sentry import sentry_traces_sampler
@@ -32,7 +36,7 @@ DEBUG = env.bool("DEBUG", default=False)
 # -----------------------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/4.0/ref/settings/
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"] if DEBUG else ["localhost"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"] if DEBUG else ["localhost"], subcast=str)
 
 ASGI_APPLICATION = "{{ cookiecutter.project_name }}.asgi.application"
 
@@ -58,9 +62,10 @@ if not DEBUG:
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DEFAULT_FROM_EMAIL = env(
+DEFAULT_FROM_EMAIL = env.str(
     "DEFAULT_FROM_EMAIL",
     default="{{ cookiecutter.author_email }}",
+    validate=lambda v: Email()(parseaddr(v)[1]),
 )
 
 EMAIL_BACKEND = (
@@ -145,11 +150,11 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["stdout"],
-            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+            "level": env.log_level("DJANGO_LOG_LEVEL", default="INFO"),
         },
         "{{ cookiecutter.project_name }}": {
             "handlers": ["stdout"],
-            "level": env("{{ cookiecutter.project_name | upper }}_LOG_LEVEL", default="INFO"),
+            "level": env.log_level("{{ cookiecutter.project_name | upper }}_LOG_LEVEL", default="INFO"),
         },
     },
 }
@@ -189,7 +194,7 @@ if DEBUG:
 
 ROOT_URLCONF = "{{ cookiecutter.project_name }}.urls"
 
-SECRET_KEY = env("SECRET_KEY", default="{{ cookiecutter.secret_key }}")
+SECRET_KEY = env.str("SECRET_KEY", default="{{ cookiecutter.secret_key }}")
 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 
@@ -205,7 +210,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_SSL_REDIRECT = not DEBUG
 
-SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
+SERVER_EMAIL = env.str("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL, validate=lambda v: Email()(parseaddr(v)[1]))
 
 SESSION_COOKIE_SECURE = not DEBUG
 
@@ -359,8 +364,8 @@ Q_CLUSTER = {
 # sentry
 if not DEBUG or env.bool("ENABLE_SENTRY", default=False):
     sentry_sdk.init(
-        dsn=env("SENTRY_DSN", default=None),
-        environment=env("SENTRY_ENV", default=None),
+        dsn=env.url("SENTRY_DSN", default=None),
+        environment=env.str("SENTRY_ENV", default="development", validate=OneOf(["development", "production"])),
         integrations=[
             DjangoIntegration(),
             LoggingIntegration(event_level=None, level=None),
