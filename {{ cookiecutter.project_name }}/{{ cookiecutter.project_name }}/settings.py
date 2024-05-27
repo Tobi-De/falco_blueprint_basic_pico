@@ -341,9 +341,9 @@ LOGIN_REDIRECT_URL = "home"
 if not DEBUG:
     ANYMAIL = {
         "AMAZON_SES_CLIENT_PARAMS": {
-            "aws_access_key_id": env.str("AWS_ACCESS_KEY_ID"),
-            "aws_secret_access_key": env.str("AWS_SECRET_ACCESS_KEY"),
-            "region_name": env.str("AWS_S3_REGION_NAME"),
+            "aws_access_key_id": env.str("AWS_ACCESS_KEY_ID", default=None),
+            "aws_secret_access_key": env.str("AWS_SECRET_ACCESS_KEY", default=None),
+            "region_name": env.str("AWS_S3_REGION_NAME", default=None),
         }
     }
 
