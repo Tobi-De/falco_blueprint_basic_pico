@@ -9,16 +9,11 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
-<<<<<<< HEAD
-    {% endraw %}<title>{{ cookiecutter.project_name }}</title>{% raw %}
+    {% block title %}{% endraw %}<title>{{ cookiecutter.project_name | title }}</title>{% raw %}{% endblock title %}
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     />
-=======
-    {% block title %}{% endraw %}<title>{{ cookiecutter.project_name | title }}</title>{% raw %}{% endblock title %}
-    {% tailwind_css %}
->>>>>>> upstream/main
     {% block css %}
     {% endblock css %}
     <script defer src="{% static 'vendors/htmx/htmx.min.js' %}"></script>
@@ -26,24 +21,12 @@
     {% endblock javascript %}
   </head>
   <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-<<<<<<< HEAD
-
-    {% block header %}
-    {% endblock header %}
-
-    <main>
-=======
-    <main class="container mx-auto">
->>>>>>> upstream/main
+  <main>
       {% block content %}
       {% endblock content %}
     </main>
     {% block modal %}
     {% endblock modal %}
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/main
     {% block inline_javascript %}
     {% endblock inline_javascript %}
     {% django_htmx_script %}
