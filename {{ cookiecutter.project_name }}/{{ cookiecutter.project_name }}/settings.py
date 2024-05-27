@@ -216,12 +216,22 @@ SESSION_COOKIE_SECURE = not DEBUG
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "access_key": env.str("AWS_ACCESS_KEY_ID", default=None),
+            "bucket_name": env.str("AWS_STORAGE_BUCKET_NAME", default=None),
+            "region_name": env.str("AWS_S3_REGION_NAME", default=None),
+            "secret_key": env.str("AWS_SECRET_ACCESS_KEY", default=None),
+        },
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+if DEBUG and not env.bool("USE_S3", default=False):
+    STORAGES["default"] = {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    }
 
 # https://nickjanetakis.com/blog/django-4-1-html-templates-are-cached-by-default-with-debug-true
 DEFAULT_LOADERS = [
