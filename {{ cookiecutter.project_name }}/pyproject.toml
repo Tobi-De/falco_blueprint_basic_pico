@@ -89,7 +89,7 @@ worker = "python manage.py qcluster"
 
 [tool.hatch.env]
 requires = [
-  "hatch-pip-compile>=1.11.1"
+  "hatch-pip-compile>=1.11.2"
 ]
 
 [[tool.hatch.envs.all.matrix]]
