@@ -115,11 +115,13 @@ LOCAL_APPS = [
 ]
 
 if DEBUG:
+    # Development only apps
     THIRD_PARTY_APPS = [
         "debug_toolbar",
         "whitenoise.runserver_nostatic",
         "django_browser_reload",
         "django_fastdev",
+        "django_watchfiles",
         *THIRD_PARTY_APPS,
     ]
 
