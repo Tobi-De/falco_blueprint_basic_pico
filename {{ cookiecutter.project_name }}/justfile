@@ -144,7 +144,7 @@ docs-upgrade:
 
 # Run pre-commit on all files
 @lint:
-    just cmd pre-commit run --all-files
+    -hatch --env dev run pre-commit run --all-files
 
 # Bump project version and update changelog
 @bumpver version:
