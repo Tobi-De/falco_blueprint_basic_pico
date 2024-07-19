@@ -367,6 +367,8 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 DEBUG_TOOLBAR_CONFIG = {
     "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],
     "SHOW_TEMPLATE_CONTEXT": True,
+    "SHOW_COLLAPSED": True,
+    "UPDATE_ON_FETCH": True,
     "ROOT_TAG_EXTRA_ATTRS": "hx-preserve",
 }
 
