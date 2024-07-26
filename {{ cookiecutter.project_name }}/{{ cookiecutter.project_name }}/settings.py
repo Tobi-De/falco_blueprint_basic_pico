@@ -103,6 +103,7 @@ THIRD_PARTY_APPS = [
     "health_check.storage",
     "health_check.contrib.migrations",
     "heroicons",
+    "compressor",
     "django_extensions",
 ]
 
@@ -313,11 +314,17 @@ if DEBUG:
 AUTH_USER_MODEL = "users.User"
 
 # django.contrib.staticfiles
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = APPS_DIR / "staticfiles"
 
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [APPS_DIR / "static"]
+
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+)
 
 # 3. Third Party Settings
 # -------------------------------------------------------------------------------------------------
@@ -354,6 +361,9 @@ if not DEBUG:
             "region_name": env.str("AWS_S3_REGION_NAME", default=None),
         }
     }
+
+# django-compressor
+COMPRESS_OFFLINE = not DEBUG
 
 # django-debug-toolbar
 DEBUG_TOOLBAR_CONFIG = {

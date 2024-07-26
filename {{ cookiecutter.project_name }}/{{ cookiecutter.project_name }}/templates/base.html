@@ -1,5 +1,6 @@
 {% raw %}{% load static %}
 {% load django_htmx %}
+{% load compress %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,11 +15,15 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     />
-    {% block css %}
-    {% endblock css %}
+    {% compress css %}
+      {% block css %}
+      {% endblock css %}
+    {% endcompress css %}
     <script defer src="{% static 'vendors/htmx/htmx.min.js' %}"></script>
-    {% block javascript %}
-    {% endblock javascript %}
+    {% compress js %}
+      {% block javascript %}
+      {% endblock javascript %}
+    {% endcompress js %}
   </head>
   <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
   <main>

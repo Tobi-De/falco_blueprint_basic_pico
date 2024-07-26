@@ -34,15 +34,17 @@ RUN tar -C /s6-install -Jxpf /tmp/s6-overlay-x86_64.tar.xz
 COPY . /app
 WORKDIR /app
 RUN python manage.py collectstatic --no-input --skip-checks
+RUN python manage.py compress
 
 # Stage 3: Run service
 FROM python-base as production
 
 COPY --from=builder-base /s6-install /
 COPY --from=builder-base $VENV_PATH $VENV_PATH
-COPY --from=builder-base /app/staticfiles /app/staticfiles
+COPY --from=builder-base /app/{{ cookiecutter.project_name }}/staticfiles /app/{{ cookiecutter.project_name }}/staticfiles
 COPY deploy/etc  /etc
-COPY . /app
+COPY {{ cookiecutter.project_name }} /app/{{ cookiecutter.project_name }}
+COPY manage.py /app/manage.py
 
 EXPOSE 80
 ENTRYPOINT ["/init"]
