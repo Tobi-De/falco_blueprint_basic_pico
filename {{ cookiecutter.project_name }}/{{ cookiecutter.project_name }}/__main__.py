@@ -5,7 +5,7 @@ from gunicorn.app import wsgiapp
 
 
 def main() -> None:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pmprep.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{{ cookiecutter.project_name }}.settings")
 
     run_func = None
     if len(sys.argv) > 1:
