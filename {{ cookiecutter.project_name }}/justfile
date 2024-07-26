@@ -21,7 +21,7 @@ _default:
     just cmd pre-commit install --install-hooks
     just migrate
     just createsuperuser
-    just lint
+    just lint > /dev/null 2>&1
 
 # Install dependencies
 @install *ARGS:
@@ -169,7 +169,7 @@ buildbin:
 
 # Run pre-commit on all files
 @lint:
-    -hatch --env dev run pre-commit run --all-files
+    hatch --env dev run pre-commit run --all-files
 
 # Bump project version and update changelog
 bumpver version:
