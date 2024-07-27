@@ -21,7 +21,7 @@ _default:
     just cmd pre-commit install --install-hooks
     just migrate
     just createsuperuser
-    just lint > /dev/null 2>&1
+    just lint > /dev/null 2>&1 || true
 
 # Install dependencies
 @install *ARGS:
