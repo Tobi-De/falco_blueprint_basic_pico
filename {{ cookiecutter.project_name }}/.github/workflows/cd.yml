@@ -34,7 +34,7 @@ jobs:
         uses: extractions/setup-just@v2
 
       - name: Build
-        run: just buildwheel
+        run: just build-wheel
 
       - uses: actions/upload-artifact@v4
         with:
@@ -127,7 +127,7 @@ jobs:
           merge-multiple: true
 
       - name: Build binary
-        run: just buildbin
+        run: just build-bin
 
       - name: Rename
         working-directory: ${{ github.workspace }}
