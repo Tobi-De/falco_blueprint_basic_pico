@@ -151,11 +151,18 @@ docs-upgrade:
 # ----------------------------------------------------------------------
 
 # Bump project version and update changelog
-bumpver version:
+bumpver VERSION:
     #!/usr/bin/env sh
-    just cmd bump-my-version bump {{ version }}
+    just cmd bump-my-version bump {{ VERSION }}
     just cmd git-cliff --output CHANGELOG.md
-    version = "$(hatch version)"
+
+    if [ -z "$(git status --porcelain)" ]; then
+        echo "No changes to commit."
+        git push && git push --tags
+        exit 0
+    fi
+
+    version="$(hatch version)"
     git add CHANGELOG.md
     git commit -m "Generate changelog for version ${version}"
     git tag -f "v${version}"
