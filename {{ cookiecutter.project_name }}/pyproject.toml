@@ -132,6 +132,7 @@ dependencies = [
     "django-watchfiles",
     "git-cliff",
     "bump-my-version",
+    "hatch-pip-compile",
 ]
 lock-filename = "requirements-dev.txt"
 
