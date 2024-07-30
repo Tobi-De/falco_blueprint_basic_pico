@@ -176,7 +176,6 @@ bumpver VERSION:
 build-wheel:
     #!/usr/bin/env sh
     export DEBUG="False"
-    just dj tailwind build
     just dj collectstatic --no-input --skip-checks
     just dj compress
     hatch build
