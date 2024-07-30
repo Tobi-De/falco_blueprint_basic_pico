@@ -1,1 +1,1 @@
-/etc/s6-overlay/scripts/db-prepare.sh
+/etc/s6-overlay/scripts/setup.sh
