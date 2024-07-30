@@ -24,7 +24,7 @@ _default:
     just lint > /dev/null 2>&1 || true
 
 # Install dependencies
-@install *ARGS:
+@install:
     just cmd python --version
 
 # Generate and upgrade dependencies
@@ -36,6 +36,14 @@ _default:
 @clean:
     hatch env prune
     rm -f .coverage.*
+
+# ----------------------------------------------------------------------
+# UTILITIES
+# ----------------------------------------------------------------------
+
+# Run a command within the dev environnment
+@cmd *ARGS:
+    hatch --env dev run {{ ARGS }}
 
 # ----------------------------------------------------------------------
 # TESTING/TYPES
@@ -129,10 +137,6 @@ docs-upgrade:
 # ----------------------------------------------------------------------
 # LINTING / FORMATTING
 # ----------------------------------------------------------------------
-
-# Run a command within the dev environnment
-@cmd *ARGS:
-    hatch --env dev run {{ ARGS }}
 
 # Run all formatters
 @fmt:
