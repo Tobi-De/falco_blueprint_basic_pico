@@ -139,7 +139,8 @@ dependencies = [
 lock-filename = "requirements-dev.txt"
 
 [tool.hatch.envs.docs]
-dependencies = [
+template = "dev"
+extra-dependencies = [
   "furo",
   "sphinx",
   "sphinx-autobuild",
