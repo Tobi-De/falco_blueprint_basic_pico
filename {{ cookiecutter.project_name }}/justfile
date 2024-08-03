@@ -27,6 +27,10 @@ _default:
 @install:
     just cmd python --version
 
+# Install hatch
+@install-hatch:
+    curl -L https://tinyurl.com/install-hatch | sh -s $HOME/.local/bin
+
 # Generate and upgrade dependencies
 @upgrade:
     just cmd hatch-pip-compile --upgrade
