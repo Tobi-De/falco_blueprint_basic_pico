@@ -29,7 +29,7 @@ _default:
 
 # Install hatch
 @install-hatch:
-    curl -L https://tinyurl.com/install-hatch | sh -s $HOME/.local/bin
+    curl -L https://tinyurl.com/install-hatch | bash -s $HOME/.local/bin
 
 # Generate and upgrade dependencies
 @upgrade:
