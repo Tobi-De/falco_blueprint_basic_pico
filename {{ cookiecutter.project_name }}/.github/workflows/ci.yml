@@ -75,7 +75,6 @@ jobs:
 
       - name: Build staticfiles
         run: |
-          just dj tailwind --skip-checks build
           just dj collectstatic --no-input --skip-checks
           just dj compress
       - name: Test with pytest
