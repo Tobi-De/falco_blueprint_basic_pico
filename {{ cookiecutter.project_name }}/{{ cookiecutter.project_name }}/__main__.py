@@ -3,7 +3,9 @@ def main() -> None:
     import os
     import sys
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{{ cookiecutter.project_name }}.settings")
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE", "{{ cookiecutter.project_name }}.settings"
+    )
     current_path = Path(__file__).parent.parent.resolve()
     sys.path.append(str(current_path))
 
@@ -27,7 +29,9 @@ def run_setup(_):
     execute_from_command_line(["manage", "setup_periodic_tasks"])
 
     with suppress(CommandError):
-        execute_from_command_line(["manage", "createsuperuser", "--noinput", "--traceback"])
+        execute_from_command_line(
+            ["manage", "createsuperuser", "--noinput", "--traceback"]
+        )
 
 
 def run_gunicorn(argv: list) -> None:
@@ -64,7 +68,7 @@ def run_qcluster(argv: list) -> None:
     """Run Django-q cluster."""
     from django.core.management import execute_from_command_line
 
-    execute_from_command_line(argv[2:])
+    execute_from_command_line(["manage", "qcluster", *argv[2:]])
 
 
 def run_manage(argv: list) -> None:
