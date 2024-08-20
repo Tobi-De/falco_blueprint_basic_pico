@@ -47,7 +47,7 @@ def run_gunicorn(argv: list) -> None:
     gunicorn_args = [
         "{{ cookiecutter.project_name }}.wsgi:application",
         "--bind",
-        "0.0.0.0:80",
+        "0.0.0.0:8000",
         # "unix:/run/{{ cookiecutter.project_name }}.gunicorn.sock", # uncomment this line and comment the line above to use a socket file
         "--max-requests",
         "1000",
