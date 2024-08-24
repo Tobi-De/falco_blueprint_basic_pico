@@ -7,8 +7,4 @@ ADD https://github.com/pypa/hatch/releases/latest/download/hatch-x86_64-unknown-
 RUN tar -C /usr/local/bin -xzf /tmp/hatch-x86_64-unknown-linux-gnu.tar.gz \
   && cargo install just
 
-WORKDIR /app
-
-COPY . .
-
-RUN just build-wheel && just build-bin
+CMD ["tail", "-f", "/dev/null"]

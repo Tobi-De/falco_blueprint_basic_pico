@@ -205,7 +205,7 @@ build-bin:
 build-bin-docker:
     mkdir dist || true
     docker build -t build-bin-container . -f deploy/Dockerfile.binary
-    docker run -d --name final-build build-bin-container sh -c "sleep 1000"
+    docker run -it -v "${PWD}:/app" -w /app --name final-build build-bin-container just build-wheel && just build-bin
     docker cp final-build:/app/dist .
     docker rm -f final-build
 {% endraw %}
