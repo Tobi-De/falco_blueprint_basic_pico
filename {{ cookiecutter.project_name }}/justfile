@@ -160,7 +160,8 @@ docs-upgrade:
 
 # Bump project version and update changelog
 bumpver VERSION:
-    #!/usr/bin/env sh
+    #!/usr/bin/env bash
+    set -euo pipefail
     just run bump-my-version bump {{ VERSION }}
     just run git-cliff --output CHANGELOG.md
 
@@ -178,7 +179,8 @@ bumpver VERSION:
 
 # Build a wheel distribution of the project using hatch
 build-wheel:
-    #!/usr/bin/env sh
+    #!/usr/bin/env bash
+    set -euo pipefail
     export DEBUG="False"
     just dj tailwind build
     just dj collectstatic --no-input --skip-checks
@@ -187,7 +189,7 @@ build-wheel:
 
 # Build a binary distribution of the project using hatch / pyapp
 build-bin:
-    #!/usr/bin/env sh
+    #!/usr/bin/env bash
     current_version=$(hatch version)
     wheel_path="${PWD}/dist/{% endraw %}{{ cookiecutter.project_name }}{% raw %}-${current_version}-py3-none-any.whl"
     [ -f "$wheel_path" ] || { echo "Wheel file does not exist. Please build the wheel first using the 'buildwheel' recipe."; exit 1; }
