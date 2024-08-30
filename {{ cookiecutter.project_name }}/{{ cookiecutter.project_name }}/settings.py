@@ -364,6 +364,14 @@ if not DEBUG:
 
 # django-compressor
 COMPRESS_OFFLINE = not DEBUG
+COMPRESS_FILTERS = {
+    "css": [
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.rCSSMinFilter",
+        "refreshcss.filters.RefreshCSSFilter",
+    ],
+    "js": ["compressor.filters.jsmin.rJSMinFilter"],
+}
 
 # django-debug-toolbar
 DEBUG_TOOLBAR_CONFIG = {
