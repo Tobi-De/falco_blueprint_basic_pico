@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
   "django[argon2]",
-  "django-allauth",
+  "django-allauth[socialaccount]",
   "django-anymail[amazon-ses]",
   "django-storages[s3]",
   "django-compressor",
