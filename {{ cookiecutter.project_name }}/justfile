@@ -90,6 +90,10 @@ coverage-report: test
 @server ADDRESS="":
     just falco work {{ ADDRESS }}
 
+# Kill the django development server in case the process is running in the background
+@kill-server PORT="8000":
+    lsof -i :{{ PORT }} -sTCP:LISTEN -t | xargs -t kill
+
 # Open a Django shell using django-extensions shell_plus command
 @shell:
     just dj shell_plus
