@@ -82,7 +82,7 @@ tests = ["tests", "*/{{ cookiecutter.project_name }}/tests"]
 exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 
 [tool.falco]
-htmx = "{{ cookiecutter.project_name }}/static/vendors/htmx/htmx.min.js"
+htmx = "{{ cookiecutter.project_name }}/static/vendors/htmx/htmx.min.js:2.0.2"
 
 [tool.falco.work]
 server = "python manage.py migrate && python manage.py runserver {address}"
